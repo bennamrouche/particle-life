@@ -10,7 +10,7 @@ import java.awt.Color;
 public class Particle
 {
 
-    Color color;
+    public Color       color;
     public float x;
     public float y;
     public float velocityX;

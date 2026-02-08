@@ -1,7 +1,7 @@
 
 package com.alphaben.particlelife;
 
-import com.alphaben.particlelife.Intializer.IntializerManager;
+
 import com.alphaben.particlelife.Intializer.RandomInitializer;
 
 import java.awt.Color;
@@ -37,7 +37,7 @@ public class Frame extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
     /**
      * @param args the command line arguments
@@ -51,26 +51,20 @@ public class Frame extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run()
-            {
-                Frame frame  = new Frame();
-                View  view  = new View();
-                view.setBackground(Color.BLACK);
-                IntializerManager.getManager().setCurrentIitializer(new RandomInitializer());
-                frame.setContentPane(view);
-                frame.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            Frame frame  = new Frame();
+            View  view  = new View();
+            view.setBackground(Color.BLACK);
+            frame.setContentPane(view);
+            frame.setVisible(true);
         });
     }
 

@@ -16,15 +16,14 @@ import java.util.Map;
 
 public class ParticleGroup
 {
-    private final String   name;
-    private  IRule    selfRule;
-    ArrayList<Particle> members = new ArrayList<>();
+    private final String    name;
+    private  IRule          selfRule;
+    ArrayList<Particle>     members = new ArrayList<>();
     Map<ParticleGroup,IRule> targetGroups = new HashMap<>();
     
-    private final Environment env = Environment.getEnvironment();
 
     
-        public  ParticleGroup(String name, int count, Color color,Initializer init)
+ public  ParticleGroup(String name, int count, Color color,Initializer init,Environment env)
    {
        for(int i=0; i <count; i++)
        {

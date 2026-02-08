@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.alphaben.particlelife.rules;
 
 import com.alphaben.particlelife.Environment;
@@ -16,12 +12,16 @@ import java.util.ArrayList;
 
 public class GravityRule implements IRule
 {
-    private  float gravity;
+    private final  float gravity;
+    public static final    float GRAVITY_BOUND       = 1.5f;
+
+    
     Environment env;
-    public GravityRule(float gravity)
+    
+    public GravityRule(float gravity, Environment env)
     {
         this.gravity = gravity;
-        this.env =  Environment.getEnvironment();
+        this.env =  env;
     }
     
  
@@ -31,23 +31,29 @@ public class GravityRule implements IRule
     {
         float    fx = 0;
         float    fy = 0;
-        float    Force = 0;
+        float    forace;
+        
       for(Particle B: sources)
       {  
         float dx  = target.x - B.x;
         float dy  = target.y - B.y;
-        float d = (float)Math.sqrt(dx * dx + dy * dy);
-        if(d > 0 && d < 80)
+        
+        float distance  = (float)Math.sqrt(dx * dx + dy * dy);
+        
+        if(distance  > 0 && distance  < 120)
         {
-         Force = this.gravity  * 1f/ d;
-         fx += Force * dx;
-         fy += Force * dy; 
+         forace = this.gravity  * 1f / distance ;
+         fx += forace * dx;
+         fy += forace * dy; 
+//          System.err.printf("dx = %f - %f\n", fx, fy);
          
         }
       }
 
          target.velocityX = (target.velocityX  + fx) * 0.5f;
          target.velocityY = (target.velocityY  + fy) * 0.5f ;
+         
+         // here must applay the rule not change the movment direction 
            
          target.x +=  target.velocityX;
          target.y +=  target.velocityY;

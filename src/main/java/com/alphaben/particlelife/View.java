@@ -2,7 +2,6 @@ package com.alphaben.particlelife;
 
 import com.alphaben.particlelife.Intializer.BorderInitializer;
 import com.alphaben.particlelife.Intializer.CenterInitializer;
-import com.alphaben.particlelife.Intializer.IntializerManager;
 import com.alphaben.particlelife.Intializer.KerenlInitializer;
 import com.alphaben.particlelife.Intializer.RandomInitializer;
 
@@ -22,26 +21,32 @@ public class View extends javax.swing.JPanel implements ComponentListener{
      * Creates new form View
      */
     
-    private final  Environment env = Environment.getEnvironment();;  
+    private   Environment env;  
  
     public View()
     {
        initComponents();
-       
+       init();
         setSize(1000, 1000);
-        this.addComponentListener(this);
         env.setSize(this.getSize());
-        final View This = this;
+       
         ControlPanel.setBackground(new Color(0,0,255,70));
         
-        Timer timer = new Timer(60, (e)->{
-            for(ParticleGroup group:env.getAllGroups())
+        Timer timer = new Timer(60, (e)-> {
+            
+            long start = System.currentTimeMillis();
+            
+            for(ParticleGroup group: env.getAllGroups())
             {
                group.update();
             }
+
+            this.repaint();
+            this.validate();
             
-            This.repaint();
-            This.validate();
+           
+            long end  = System.currentTimeMillis();
+            System.err.printf("time %d ms\n", end - start);
         });
         
         timer.start();
@@ -49,7 +54,13 @@ public class View extends javax.swing.JPanel implements ComponentListener{
 
    
     }
+    
+    private void init() {
+       this.addComponentListener(this);
+        this.env = new Environment(this.getSize());
+       this.env.setCurrentIntializer(new RandomInitializer());
 
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -67,7 +78,7 @@ public class View extends javax.swing.JPanel implements ComponentListener{
 
         setForeground(new java.awt.Color(255, 255, 255));
 
-        ControlPanel.setBackground(new java.awt.Color(30, 28, 252));
+        ControlPanel.setBackground(new java.awt.Color(204, 204, 255));
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setText("New Environment");
@@ -160,6 +171,7 @@ public class View extends javax.swing.JPanel implements ComponentListener{
             ControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ControlPanelLayout.createSequentialGroup()
                 .addComponent(jButton2)
+                .addGap(0, 0, 0)
                 .addComponent(jButton1)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,11 +203,12 @@ public class View extends javax.swing.JPanel implements ComponentListener{
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         
-        IntializerManager.getManager().getCurrentIitializer().newEnvironment();
+        this.env = new Environment(this.getSize());
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         IntializerManager.getManager().getCurrentIitializer().addNewGroup();
+         this.env.addNewGroup();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jRadioBorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioBorderActionPerformed
@@ -209,56 +222,55 @@ public class View extends javax.swing.JPanel implements ComponentListener{
     private void jRadioRandomStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jRadioRandomStateChanged
        if(jRadioRandom.isSelected())
        {
-           IntializerManager.getManager().
-                   setCurrentIitializer(new RandomInitializer());
+         this.env.setCurrentIntializer(new RandomInitializer());
        }
     }//GEN-LAST:event_jRadioRandomStateChanged
 
     private void jRadioKernelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jRadioKernelStateChanged
            if(jRadioKernel.isSelected())
        {
-           IntializerManager.getManager().
-                   setCurrentIitializer(new KerenlInitializer());
+           this.env.setCurrentIntializer(new KerenlInitializer());
        }
     }//GEN-LAST:event_jRadioKernelStateChanged
 
     private void jRadioBorderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jRadioBorderStateChanged
           if(jRadioBorder.isSelected())
             {
-                      IntializerManager.getManager().
-                      setCurrentIitializer(new BorderInitializer());
+                      this.env.setCurrentIntializer(new BorderInitializer());
             }
     }//GEN-LAST:event_jRadioBorderStateChanged
 
     private void JRadioCenterStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_JRadioCenterStateChanged
       if( JRadioCenter.isSelected())
-            {
-                      IntializerManager.getManager().
-                      setCurrentIitializer(new CenterInitializer());
-            }
+      {
+                    this.env.setCurrentIntializer(new CenterInitializer());
+      }
     }//GEN-LAST:event_JRadioCenterStateChanged
 
     @Override
     public void paint(Graphics g)
     {
-        setBackground(new Color(0,0,0,0));
-           super.paint(g); 
+       setBackground(new Color(0,0,0,0)); 
+       super.paint(g); 
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.BLACK);
+        
         g.fillRect(0, 0, getWidth(), getHeight());
        for(ParticleGroup group: env.getAllGroups())
         {
             for(Particle particle: group.members)
             {
-               Color src = particle.color;
+                Color src = particle.color;
                 g.setColor(new Color(src.getRed(), src.getGreen(), src.getBlue(), 80));
-                 g.fillOval((int)particle.x-4, (int)particle.y-4, 8, 8);
+                g.fillOval((int)particle.x-4, (int)particle.y-4, 8, 8);
                 g.setColor(particle.color);
-                g.fillOval((int)particle.x - 2, (int)particle.y - 2, 4, 4);
-//                Color shdowColor = new Color(particle.color.getRGB());
+              
+                int dim  = Math.clamp((long)(particle.velocityX + particle.velocityY) , 4,10);
+                
+                g.fillOval((int)particle.x - 2, (int)particle.y - 2, dim, dim);
                
            
             }
