@@ -5,6 +5,7 @@ import com.alphaben.particlelife.Intializer.CenterInitializer;
 import com.alphaben.particlelife.Intializer.IntializerManager;
 import com.alphaben.particlelife.Intializer.KerenlInitializer;
 import com.alphaben.particlelife.Intializer.RandomInitializer;
+import com.alphaben.particlelife.engine.Simulation;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -22,8 +23,9 @@ public class View extends javax.swing.JPanel implements ComponentListener{
      * Creates new form View
      */
     
-    private final  Environment env = Environment.getEnvironment();;  
- 
+    private final  Environment env = Environment.getEnvironment();;
+    private final  Simulation simulation = new Simulation();
+
     public View()
     {
        initComponents();
@@ -35,11 +37,8 @@ public class View extends javax.swing.JPanel implements ComponentListener{
         ControlPanel.setBackground(new Color(0,0,255,70));
         
         Timer timer = new Timer(60, (e)->{
-            for(ParticleGroup group:env.getAllGroups())
-            {
-               group.update();
-            }
-            
+            simulation.step(env);
+
             This.repaint();
             This.validate();
         });
@@ -251,16 +250,9 @@ public class View extends javax.swing.JPanel implements ComponentListener{
         g.fillRect(0, 0, getWidth(), getHeight());
        for(ParticleGroup group: env.getAllGroups())
         {
-            for(Particle particle: group.members)
+            for(Particle particle: group.getMembers())
             {
-               Color src = particle.color;
-                g.setColor(new Color(src.getRed(), src.getGreen(), src.getBlue(), 80));
-                 g.fillOval((int)particle.x-4, (int)particle.y-4, 8, 8);
-                g.setColor(particle.color);
-                g.fillOval((int)particle.x - 2, (int)particle.y - 2, 4, 4);
-//                Color shdowColor = new Color(particle.color.getRGB());
-               
-           
+                ParticleRenderer.draw(g, particle);
             }
        }
         super.paintComponent(g);

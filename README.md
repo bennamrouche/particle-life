@@ -7,9 +7,9 @@ Particles self-organize into mesmerizing clusters, swarms, and dynamic patterns 
 
 ## 🔍 How It Works
 
-* Particles have **types** (Red, Orange, Yellow, Green, Blue, Violet)
-* Each type has attraction/repulsion settings toward others
+* Particles start out in colored groups and have attraction/repulsion settings toward other groups
 * The system updates positions using basic physics and force accumulation
+* Beyond force, groups can also be bound with rules that blend particle colors, change particle shape based on speed, and destroy particles (predator/prey contact, or old age)
 * UI powered by **Java Swing** for real-time rendering
 
 ## 🧠 Inspiration
@@ -28,11 +28,20 @@ Massive props to both for the mind-blowing concept of digital particle societies
 
 ## 🚀 Run It
 
-Just clone the repo and run the main class:
+Clone the repo, then either run it directly with Maven:
 
 ```bash
-directly from your IDE (IntelliJ, Eclipse, etc.)directly from your IDE (IntelliJ, Eclipse, etc.)
+mvn exec:java
 ```
+
+or build a jar and run that:
+
+```bash
+mvn package
+java -jar target/particle-life-1.0.jar
+```
+
+You can also just open the project in an IDE (IntelliJ, Eclipse, etc.) and run `Frame.main`.
 
 ## 📸 Preview
 

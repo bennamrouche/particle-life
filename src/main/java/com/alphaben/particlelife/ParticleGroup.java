@@ -4,8 +4,7 @@ import com.alphaben.particlelife.Intializer.Initializer;
 import com.alphaben.particlelife.rules.IRule;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  *
@@ -16,58 +15,41 @@ import java.util.Map;
 
 public class ParticleGroup
 {
+    /** A rule bound on this group is applied to targetGroup's members, using this group's members as sources. */
+    public record RuleBinding(ParticleGroup targetGroup, IRule rule) {}
+
     private final String   name;
-    private  IRule    selfRule;
-    ArrayList<Particle> members = new ArrayList<>();
-    Map<ParticleGroup,IRule> targetGroups = new HashMap<>();
-    
+    private final List<Particle> members = new ArrayList<>();
+    private final List<RuleBinding> bindings = new ArrayList<>();
+
     private final Environment env = Environment.getEnvironment();
 
-    
+
         public  ParticleGroup(String name, int count, Color color,Initializer init)
    {
        for(int i=0; i <count; i++)
        {
            float  x = init.nextX(env.getWidth());
            float  y = init.nextY(env.getHeight());
-         
+
            members.add(new Particle(x, y, color,0 ,0));
        }
        this.name = name;
    }
-        
-   public  void update()
+
+   public List<Particle> getMembers()
    {
-        updateMembers();
-     for(Map.Entry<ParticleGroup,IRule> pair: targetGroups.entrySet())
-     {
-         for(Particle particle :pair.getKey().members)
-         {
-             pair.getValue().apply(particle, members);
-         }
-     }
-   }
-    
-   private void updateMembers()
-    {
-        if(selfRule != null) {
-            for (Particle target: members){
-                selfRule.apply(target, members);
-            }
-        }
-    }
-   
-   public void addTargetGroup(ParticleGroup group, IRule rule)
-   {
-       targetGroups.put(group, rule);
+       return members;
    }
 
-   public void removeTargetGroup(ParticleGroup group)
+   public List<RuleBinding> getBindings()
    {
-       targetGroups.remove(group);
+       return bindings;
    }
-    public void setRule(IRule rule)
-    {
-        this.selfRule = rule;
-    }
+
+   /** Registers rule to run each tick against targetGroup's members, using this group's members as sources. */
+   public void bind(ParticleGroup targetGroup, IRule rule)
+   {
+       bindings.add(new RuleBinding(targetGroup, rule));
+   }
 }
